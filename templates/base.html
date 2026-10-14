@@ -1,0 +1,90 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}CivicPulse AI{% endblock %}</title>
+
+    <meta name="description"
+          content="CivicPulse AI helps citizens report and track civic issues.">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a href="{% url 'home' %}" class="brand">
+                <span class="brand-mark">C</span>
+                <span>CivicPulse <strong>AI</strong></span>
+            </a>
+
+            <button class="menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Toggle navigation"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <div class="nav-links" id="navLinks">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#features">Features</a>
+            </div>
+
+            <div class="nav-actions">
+                <a class="button button-outline"
+                   href="/citizen/login/">
+                    Citizen Login
+                </a>
+
+                <a class="button button-primary"
+                   href="/citizen/signup/">
+                    Get Started
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+        <div class="container messages">
+            {% for message in messages %}
+                <div class="message message-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <a href="{% url 'home' %}" class="brand footer-brand">
+                    CivicPulse <strong>AI</strong>
+                </a>
+                <p>Smarter grievance management for better cities.</p>
+            </div>
+
+            <a href="/admin/login/">Municipal Admin Portal</a>
+        </div>
+
+        <div class="container footer-bottom">
+            © {% now "Y" %} CivicPulse AI. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}" defer></script>
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

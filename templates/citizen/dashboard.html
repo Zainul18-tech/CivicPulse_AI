@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Citizen Dashboard | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">CITIZEN PORTAL</span>
+        <h1 style="margin-top: 12px;">Welcome, {{ request.user.first_name|default:request.user.username }}</h1>
+
+        <p style="margin-top: 10px; color: var(--muted);">
+            Your civic activity and complaint tracking will appear here.
+        </p>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+            <article class="feature-card">
+                <h3>Report an issue</h3>
+                <p>Submit a civic problem for review and routing.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>My complaints</h3>
+                <p>Review complaint status and progress updates.</p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Account</h3>
+                <p>Signed in as {{ request.user.username }}.</p>
+            </article>
+        </div>
+
+        <form method="post" action="{% url 'logout' %}" style="margin-top: 28px;">
+            {% csrf_token %}
+            <button type="submit" class="button button-outline">
+                Log Out
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}

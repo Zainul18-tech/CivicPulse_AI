@@ -1,0 +1,96 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Citizen Account | CivicPulse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="container">
+        <div class="auth-layout">
+
+            <aside class="auth-aside">
+                <div>
+                    <a href="{% url 'home' %}" class="brand">
+                        <span class="brand-mark">C</span>
+                        <span>CivicPulse <strong>AI</strong></span>
+                    </a>
+
+                    <h1>Your voice can help improve your city.</h1>
+
+                    <p>
+                        Create an account to report civic problems,
+                        follow updates and keep track of your complaints
+                        in one place.
+                    </p>
+                </div>
+
+                <div class="auth-aside-note">
+                    A smarter connection between citizens
+                    and municipal services.
+                </div>
+            </aside>
+
+            <div class="auth-form-panel">
+                <h2>Create your account</h2>
+                <p class="auth-subtitle">
+                    Join CivicPulse AI as a citizen.
+                </p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="form-errors">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="form-field">
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-help">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="field-errors">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                        <div class="form-errors">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit"
+                            class="button button-primary auth-submit">
+                        Create Account
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    Already registered?
+                    <a href="{% url 'citizen_login' %}">Log in</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

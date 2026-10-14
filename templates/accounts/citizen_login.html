@@ -1,0 +1,94 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Citizen Login | CivicPulse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="container">
+        <div class="auth-layout">
+
+            <aside class="auth-aside">
+                <div>
+                    <a href="{% url 'home' %}" class="brand">
+                        <span class="brand-mark">C</span>
+                        <span>CivicPulse <strong>AI</strong></span>
+                    </a>
+
+                    <h1>Welcome back.</h1>
+
+                    <p>
+                        Sign in to follow complaint progress,
+                        review updates and report new civic issues.
+                    </p>
+                </div>
+
+                <div class="auth-aside-note">
+                    Your complaint history stays connected
+                    to your account.
+                </div>
+            </aside>
+
+            <div class="auth-form-panel">
+                <h2>Citizen login</h2>
+                <p class="auth-subtitle">
+                    Enter your account credentials to continue.
+                </p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="form-errors">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-field">
+                        <label for="username">Username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit"
+                            class="button button-primary auth-submit">
+                        Log In
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    Don't have an account?
+                    <a href="{% url 'citizen_signup' %}">Sign up</a>
+                </p>
+
+                <p class="auth-switch">
+                    Municipal staff?
+                    <a href="{% url 'admin_login' %}">Staff login</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,204 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Staff Account | CivicPulse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<style>
+    .staff-auth-section {
+        min-height: 70vh;
+        padding: 56px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--background, #f5f8f6);
+    }
+
+    .staff-auth-card {
+        width: 100%;
+        max-width: 540px;
+        padding: 36px;
+        background: #ffffff;
+        border: 1px solid #e2e9e4;
+        border-radius: 18px;
+        box-shadow: 0 12px 35px rgba(20, 60, 40, 0.08);
+    }
+
+    .staff-auth-card h1 {
+        margin: 0 0 10px;
+        color: #173d2b;
+        font-size: clamp(26px, 4vw, 34px);
+        line-height: 1.25;
+    }
+
+    .staff-auth-description {
+        margin: 0 0 28px;
+        color: #64756b;
+        line-height: 1.6;
+    }
+
+    .staff-form-group {
+        margin-bottom: 20px;
+    }
+
+    .staff-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #263b30;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .staff-form-group input {
+        display: block;
+        width: 100%;
+        min-height: 46px;
+        padding: 11px 13px;
+        box-sizing: border-box;
+        border: 1px solid #ccd8cf;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #20372a;
+        font: inherit;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .staff-form-group input:focus {
+        border-color: #218653;
+        box-shadow: 0 0 0 3px rgba(33, 134, 83, 0.12);
+    }
+
+    .staff-help-text {
+        margin-top: 7px;
+        color: #718076;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .staff-help-text ul {
+        margin: 6px 0 0;
+        padding-left: 20px;
+    }
+
+    .staff-error {
+        margin: 7px 0 0;
+        color: #b42318;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .staff-non-field-errors {
+        margin-bottom: 18px;
+        padding: 12px;
+        border: 1px solid #f3c5c1;
+        border-radius: 8px;
+        background: #fff4f2;
+        color: #b42318;
+    }
+
+    .staff-submit-button {
+        display: block;
+        width: 100%;
+        min-height: 48px;
+        margin-top: 8px;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 8px;
+        background: #197447;
+        color: #ffffff;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .staff-submit-button:hover {
+        background: #125b36;
+        transform: translateY(-1px);
+    }
+
+    .staff-back-link {
+        margin: 22px 0 0;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .staff-back-link a {
+        color: #197447;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .staff-back-link a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+        .staff-auth-section {
+            padding: 32px 16px;
+        }
+
+        .staff-auth-card {
+            padding: 24px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="staff-auth-section">
+    <div class="staff-auth-card">
+        <h1>Create Staff Account</h1>
+
+        <p class="staff-auth-description">
+            Register an authorized municipal staff member for
+            CivicPulse AI. The account will have staff access,
+            but not superuser privileges.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="staff-non-field-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="staff-form-group">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="staff-help-text">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="staff-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="staff-submit-button">
+                Create Staff Account
+            </button>
+        </form>
+
+        <p class="staff-back-link">
+            <a href="{% url 'admin_dashboard' %}">
+                &larr; Back to Admin Dashboard
+            </a>
+        </p>
+    </div>
+</section>
+{% endblock %}

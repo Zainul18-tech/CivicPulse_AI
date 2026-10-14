@@ -1,0 +1,186 @@
+
+{% extends 'base.html' %}
+
+{% block title %}CivicPulse AI | Smarter Cities{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container hero-grid">
+
+        <div class="hero-content">
+            <span class="eyebrow">
+                SMART CITIES · CONNECTED COMMUNITIES
+            </span>
+
+            <h1>
+                Your city.<br>
+                Your voice.<br>
+                <span class="highlight">Real change.</span>
+            </h1>
+
+            <p class="hero-description">
+                Report potholes, water supply problems, broken
+                streetlights and other civic issues. CivicPulse AI
+                helps route complaints to the right department
+                and keeps you informed about their progress.
+            </p>
+
+            <div class="hero-actions">
+                <a href="/citizen/signup/"
+                   class="button button-primary button-large">
+                    Report an Issue →
+                </a>
+
+                <a href="/citizen/login/"
+                   class="button button-outline button-large">
+                    Track My Complaint
+                </a>
+            </div>
+
+            <div class="trust-note">
+                <span class="status-dot"></span>
+                One platform for smarter grievance management
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="visual-top">
+                <span class="visual-label">CIVIC INTELLIGENCE</span>
+                <span class="live-indicator">● LIVE DEMO</span>
+            </div>
+
+            <div class="visual-icon">⌖</div>
+
+            <h2>Every complaint matters.</h2>
+
+            <p>
+                From reporting to resolution, make civic services
+                more transparent and accountable.
+            </p>
+
+            <div class="visual-stats">
+                <div>
+                    <strong>01</strong>
+                    <span>Report</span>
+                </div>
+                <div>
+                    <strong>02</strong>
+                    <span>Route</span>
+                </div>
+                <div>
+                    <strong>03</strong>
+                    <span>Resolve</span>
+                </div>
+            </div>
+
+            <div class="visual-footer">
+                <span>AI-assisted classification</span>
+                <span>Secure tracking</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="features section" id="features">
+    <div class="container">
+
+        <div class="section-heading">
+            <span class="eyebrow">BUILT FOR CITIZENS</span>
+            <h2>From complaints to action.</h2>
+            <p>
+                A simpler way to report civic problems and a
+                smarter way for authorities to manage them.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+
+            <article class="feature-card">
+                <div class="feature-icon">◎</div>
+                <h3>Easy Reporting</h3>
+                <p>
+                    Submit civic issues with a description,
+                    location and supporting evidence.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">✳</div>
+                <h3>AI-Powered Routing</h3>
+                <p>
+                    Classify complaints and suggest the
+                    appropriate municipal department.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">↗</div>
+                <h3>Transparent Tracking</h3>
+                <p>
+                    Follow complaint status and see recorded
+                    progress updates in one place.
+                </p>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<section class="how-section section" id="how-it-works">
+    <div class="container how-grid">
+        <div>
+            <span class="eyebrow">HOW IT WORKS</span>
+            <h2>Three steps toward a better city.</h2>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <span class="step-number">01</span>
+                <div>
+                    <h3>Report the problem</h3>
+                    <p>Describe the issue and provide its location.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">02</span>
+                <div>
+                    <h3>Route it intelligently</h3>
+                    <p>
+                        AI assists with categorization, prioritization
+                        and department recommendations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">03</span>
+                <div>
+                    <h3>Track the resolution</h3>
+                    <p>
+                        Follow status updates until the issue
+                        is resolved or requires further action.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="closing-cta">
+    <div class="container closing-content">
+        <div>
+            <h2>Notice a problem in your neighbourhood?</h2>
+            <p>Make your voice count. Start with a report.</p>
+        </div>
+
+        <a href="/citizen/signup/"
+           class="button button-light button-large">
+            Get Started →
+        </a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Municipal Staff Login | CivicPulse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="container">
+        <div class="auth-layout">
+
+            <aside class="auth-aside">
+                <div>
+                    <a href="{% url 'home' %}" class="brand">
+                        <span class="brand-mark">C</span>
+                        <span>CivicPulse <strong>AI</strong></span>
+                    </a>
+
+                    <h1>Manage complaints. Improve services.</h1>
+
+                    <p>
+                        The municipal portal is for authorized
+                        administrators and officers to review,
+                        assign and resolve citizen complaints.
+                    </p>
+                </div>
+
+                <div class="auth-aside-note">
+                    Restricted access for authorized municipal staff.
+                </div>
+            </aside>
+
+            <div class="auth-form-panel">
+                <h2>Staff portal</h2>
+                <p class="auth-subtitle">
+                    Sign in using your authorized staff account.
+                </p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="form-errors">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-field">
+                        <label for="username">Staff username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit"
+                            class="button button-primary auth-submit">
+                        Secure Login
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    <a href="{% url 'home' %}">Return to homepage</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Municipal Dashboard | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">MUNICIPAL MANAGEMENT</span>
+
+        <h1 style="margin-top: 12px;">Staff dashboard</h1>
+
+        <p style="margin-top: 10px; color: var(--muted);">
+            Welcome,
+            {{ request.user.get_full_name|default:request.user.username }}.
+            Manage citizen grievances, review AI suggestions and monitor
+            complaint resolution.
+        </p>
+
+        <div class="feature-grid" style="margin-top: 32px;">
+
+            <article class="feature-card">
+                <h3>Complaint Management</h3>
+                <p>
+                    Review incoming complaints, monitor priorities and
+                    manage department assignments.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <h3>Duplicate Review</h3>
+                <p>
+                    Review AI-suggested related complaints and confirm
+                    duplicate cases before linking them.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <h3>SLA and Analytics</h3>
+                <p>
+                    Monitor resolution deadlines, overdue complaints,
+                    escalation status and model performance.
+                </p>
+            </article>
+
+            {% if request.user.is_superuser %}
+                <article class="feature-card">
+                    <h3>Staff Account Creation</h3>
+                    <p>Create accounts for authorized municipal staff.</p>
+                    <a
+                        href="{% url 'create_staff_account' %}"
+                        class="button button-outline"
+                    >
+                        Create Staff Account
+                    </a>
+                </article>
+            {% endif %}
+
+        </div>
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+            style="margin-top: 28px;"
+        >
+            {% csrf_token %}
+
+            <button type="submit" class="button button-outline">
+                Log Out
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}
