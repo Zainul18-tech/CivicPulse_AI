@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Department Portal | CivicPulse AI{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/department.css' %}">
+</head>
+<body>
+    <header class="dept-header">
+        <a href="{% url 'dept_dashboard' %}" class="dept-brand">CivicPulse AI <span>Department Portal</span></a>
+        <nav>
+            <a href="{% url 'dept_dashboard' %}">Departments</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'dept_overview' %}">Overview</a>
+                <a href="{% url 'dept_complaints' %}">Complaints</a>
+                <a href="{% url 'dept_logout' %}">Log out</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main class="dept-container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}<p class="message">{{ message }}</p>{% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% extends 'department/base_dept.html' %}
+
+{% block title %}Update Complaint | CivicPulse AI{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{{ department.name }} | {{ c.tracking_id|default:c.pk }}</p>
+<h1>{{ c.title }}</h1>
+<section class="dept-panel">
+    <dl class="complaint-summary">
+        <div><dt>Complaint ID</dt><dd>{{ c.tracking_id|default:c.pk }}</dd></div>
+        <div><dt>Description</dt><dd>{{ c.description }}</dd></div>
+        <div><dt>Priority</dt><dd><span class="priority-label priority-{{ c.priority|lower }}">{{ c.priority }}</span></dd></div>
+        <div><dt>Deadline</dt><dd>{{ work.deadline|date:"M j, Y"|default:"Not set" }}</dd></div>
+        <div><dt>Status</dt><dd>{{ c.status }}</dd></div>
+    </dl>
+</section>
+<section class="dept-panel dept-narrow">
+    <h2>Record progress</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="assignee">Assign staff member or team</label>
+        <select id="assignee" name="assignee">
+            <option value="">Unassigned</option>
+            {% if staff_members %}
+                <optgroup label="Staff">
+                    {% for staff in staff_members %}
+                        <option value="staff:{{ staff.pk }}" {% if work.assigned_user_id == staff.pk %}selected{% endif %}>{{ staff.get_full_name|default:staff.username }}</option>
+                    {% endfor %}
+                </optgroup>
+            {% endif %}
+            {% if teams %}
+                <optgroup label="Teams">
+                    {% for team in teams %}
+                        <option value="team:{{ team.pk }}" {% if work.assigned_team_id == team.pk %}selected{% endif %}>{{ team.name }}</option>
+                    {% endfor %}
+                </optgroup>
+            {% endif %}
+        </select>
+        <label for="status">Status</label>
+        <select id="status" name="status">
+            {% for value in statuses %}
+                <option value="{{ value }}" {% if c.status == value %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+        <label for="deadline">Deadline</label>
+        <input id="deadline" name="deadline" type="date" value="{{ work.deadline|date:'Y-m-d' }}" aria-label="Complaint deadline">
+        <label for="work_done">Work update</label>
+        <textarea id="work_done" name="work_done" rows="5" placeholder="Describe the work performed or progress made"></textarea>
+        <label for="work_date">Work date</label>
+        <input id="work_date" name="work_date" type="date" value="{{ today }}">
+        <label for="before_photo">Before photo</label>
+        <input id="before_photo" name="before_photo" type="file" accept="image/*">
+        <label for="after_photo">After / completion photo</label>
+        <input id="after_photo" name="after_photo" type="file" accept="image/*">
+        <div class="form-actions">
+            <button type="submit" name="action" value="save">Save update</button>
+            <a href="{% url 'dept_complaints' %}" class="button-secondary">Cancel</a>
+            {% if c.status != 'Resolved' %}
+                <button type="submit" name="action" value="resolve" class="button-danger">Mark as resolved</button>
+            {% endif %}
+        </div>
+    </form>
+</section>
+<section class="dept-panel">
+    <h2>Work history</h2>
+    {% for update in updates %}
+        <article class="timeline-entry">
+            <span class="timeline-marker"></span>
+            <div class="timeline-content">
+                <div class="section-heading">
+                    <strong>{{ update.work_date|date:"M j, Y" }}</strong>
+                    <span>{{ update.created_at|date:"M j, Y H:i" }}</span>
+                </div>
+                {% if update.status %}<p><span class="status-pill">{{ update.status }}</span></p>{% endif %}
+                <p>{{ update.work_done }}</p>
+                {% if update.updated_by %}<small>Updated by {{ update.updated_by.get_full_name|default:update.updated_by.username }}</small>{% endif %}
+                {% if update.before_photo %}
+                    <figure class="timeline-photo"><img src="{{ update.before_photo.url }}" alt="Before work"></figure>
+                {% endif %}
+                {% if update.after_photo %}
+                    <figure class="timeline-photo"><img src="{{ update.after_photo.url }}" alt="After work"></figure>
+                {% endif %}
+                {% if update.photo %}
+                    <figure class="timeline-photo"><img src="{{ update.photo.url }}" alt="Work completion"></figure>
+                {% endif %}
+            </div>
+        </article>
+    {% empty %}
+        <p class="muted">No work history has been recorded for this complaint.</p>
+    {% endfor %}
+</section>
+<a href="{% url 'dept_complaints' %}" class="dept-back">Back to complaints</a>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Complaint {{ complaint.tracking_id }} | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 820px;">
+        <span class="eyebrow">COMPLAINT TRACKING</span>
+        <h1 style="margin-top: 12px;">{{ complaint.title }}</h1>
+        <div class="feature-card" style="margin-top: 24px;">
+            <p><strong>Tracking ID:</strong> {{ complaint.tracking_id|default:'Pending' }}</p>
+            <p><strong>Status:</strong> {{ complaint.status }}</p>
+            <p><strong>Priority:</strong> {{ complaint.priority }}</p>
+            <p><strong>Department:</strong> {{ complaint.department.name|default:'Unassigned' }}</p>
+            <p><strong>Submitted:</strong> {{ complaint.created_at }}</p>
+            <p style="white-space: pre-wrap;">{{ complaint.description }}</p>
+        </div>
+        <div class="feature-card" style="margin-top: 24px;">
+            <h2>Progress updates</h2>
+            {% if updates %}
+                {% for update in updates %}
+                    <article style="padding: 16px 0; border-bottom: 1px solid #e3eae4;">
+                        <p><strong>{{ update.work_date }}</strong></p>
+                        <p>{{ update.work_done }}</p>
+                        {% if update.photo %}
+                            <img src="{{ update.photo.url }}" alt="Complaint progress photo" style="max-width: 100%; height: auto;">
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p>No progress updates have been posted yet.</p>
+            {% endif %}
+        </div>
+        <a href="{% url 'my_complaints' %}" class="button button-outline" style="margin-top: 20px;">Back to my complaints</a>
+    </div>
+</section>
+{% endblock %}

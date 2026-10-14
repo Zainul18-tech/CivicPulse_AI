@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Duplicate Review | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">MUNICIPAL MANAGEMENT</span>
+        <h1 style="margin-top: 12px;">Duplicate review</h1>
+        <p style="margin-top: 10px; color: var(--muted);">Potential duplicate complaint clusters detected by shared titles.</p>
+        <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="{% url 'admin_dashboard' %}" class="button button-outline">Back to dashboard</a>
+            <a href="{% url 'admin_complaints' %}" class="button button-primary">View all complaints</a>
+        </div>
+        <div class="feature-card" style="margin-top: 24px;">
+            {% if duplicate_groups %}
+                {% for group in duplicate_groups %}
+                    <div style="padding: 18px 0; border-bottom: 1px solid #e3eae4;">
+                        <h3>{{ group.title }}</h3>
+                        <p><strong>{{ group.count }}</strong> complaints identified in this cluster.</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No likely duplicate complaint groups were detected.</p>
+            {% endif %}
+        </div>
+        {% if flagged %}
+            <div class="feature-card" style="margin-top: 24px;">
+                <h3>Flagged cases</h3>
+                <ul>
+                    {% for complaint in flagged %}
+                        <li><strong>{{ complaint.tracking_id|default:'Pending' }}</strong> - {{ complaint.title }} ({{ complaint.status }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

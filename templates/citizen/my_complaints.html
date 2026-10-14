@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}My Complaints | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">CITIZEN PORTAL</span>
+        <h1 style="margin-top: 12px;">My complaints</h1>
+        <div class="feature-card" style="margin-top: 24px;">
+            {% if complaints %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; padding: 10px;">Tracking ID</th>
+                                <th style="text-align: left; padding: 10px;">Title</th>
+                                <th style="text-align: left; padding: 10px;">Status</th>
+                                <th style="text-align: left; padding: 10px;">Department</th>
+                                <th style="padding: 10px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for complaint in complaints %}
+                                <tr>
+                                    <td style="padding: 10px;">{{ complaint.tracking_id|default:'Pending' }}</td>
+                                    <td style="padding: 10px;">{{ complaint.title }}</td>
+                                    <td style="padding: 10px;">{{ complaint.status }}</td>
+                                    <td style="padding: 10px;">{{ complaint.department.name|default:'Unassigned' }}</td>
+                                    <td style="padding: 10px;"><a href="{% url 'complaint_detail' complaint.pk %}" class="button button-outline">View details</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>You have not submitted any complaints yet.</p>
+                <a href="{% url 'submit_complaint' %}" class="button button-primary" style="margin-top: 12px;">Submit your first complaint</a>
+            {% endif %}
+        </div>
+        <a href="{% url 'dashboard' %}" class="button button-outline" style="margin-top: 20px;">Back to dashboard</a>
+    </div>
+</section>
+{% endblock %}

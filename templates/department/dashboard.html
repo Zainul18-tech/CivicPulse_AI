@@ -1,0 +1,23 @@
+{% extends 'department/base_dept.html' %}
+
+{% block title %}Departments | CivicPulse AI{% endblock %}
+
+{% block content %}
+<h1>Department portal</h1>
+<p class="muted">Choose your department to sign in and manage assigned complaints.</p>
+<div class="dept-grid">
+    {% for item in data %}
+        <a class="dept-card" href="{% url 'dept_login' item.dept.slug %}">
+            <span class="dept-icon" aria-hidden="true">{{ item.icon }}</span>
+            <h2>{{ item.dept.name }}</h2>
+            <p class="open-count"><strong>{{ item.open_count }}</strong> open complaints</p>
+            <span class="dept-link">Staff sign in</span>
+        </a>
+    {% empty %}
+        <div class="dept-card">
+            <h2>No departments available</h2>
+            <p>Departments need to be added by an administrator before staff can sign in.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

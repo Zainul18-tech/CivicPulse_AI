@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Complaint Management | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">MUNICIPAL MANAGEMENT</span>
+        <h1 style="margin-top: 12px;">Complaint management</h1>
+        <form method="get" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by title, text or tracking ID" style="max-width: 320px;" />
+            <select name="status">
+                <option value="">All statuses</option>
+                <option value="Pending" {% if status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Resolved" {% if status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <select name="department">
+                <option value="">All departments</option>
+                {% for department in departments %}
+                    <option value="{{ department.pk }}" {% if department_filter == department.pk|stringformat:'s' %}selected{% endif %}>{{ department.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="button button-primary">Filter</button>
+            <a href="{% url 'admin_dashboard' %}" class="button button-outline">Back to dashboard</a>
+        </form>
+        <div class="feature-card" style="margin-top: 24px;">
+            {% if complaints %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead><tr>
+                            <th style="text-align: left; padding: 10px;">Tracking ID</th>
+                            <th style="text-align: left; padding: 10px;">Title</th>
+                            <th style="text-align: left; padding: 10px;">Status</th>
+                            <th style="text-align: left; padding: 10px;">Priority</th>
+                            <th style="text-align: left; padding: 10px;">Department assignment</th>
+                            <th style="text-align: left; padding: 10px;">Citizen</th>
+                        </tr></thead>
+                        <tbody>
+                            {% for complaint in complaints %}
+                                <tr>
+                                    <td style="padding: 10px;">{{ complaint.tracking_id|default:'Pending' }}</td>
+                                    <td style="padding: 10px;">{{ complaint.title }}</td>
+                                    <td style="padding: 10px;">{{ complaint.status }}</td>
+                                    <td style="padding: 10px;">{{ complaint.priority }}</td>
+                                    <td style="padding: 10px;">
+                                        <form method="post" style="display: flex; gap: 8px; align-items: center;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="complaint_id" value="{{ complaint.pk }}">
+                                            <select name="department" aria-label="Department for {{ complaint.tracking_id }}">
+                                                <option value="">Unassigned</option>
+                                                {% for department in departments %}
+                                                    <option value="{{ department.pk }}" {% if complaint.department_id == department.pk %}selected{% endif %}>{{ department.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="button button-outline">Save</button>
+                                        </form>
+                                    </td>
+                                    <td style="padding: 10px;">{{ complaint.user.get_full_name|default:complaint.user.username|default:'Anonymous' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No complaints match the current filter.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

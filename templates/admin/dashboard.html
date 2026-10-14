@@ -25,6 +25,7 @@
                     Review incoming complaints, monitor priorities and
                     manage department assignments.
                 </p>
+                <a href="{% url 'admin_complaints' %}" class="button button-outline" style="margin-top: 16px;">Open Complaints</a>
             </article>
 
             <article class="feature-card">
@@ -33,6 +34,7 @@
                     Review AI-suggested related complaints and confirm
                     duplicate cases before linking them.
                 </p>
+                <a href="{% url 'admin_duplicate_review' %}" class="button button-outline" style="margin-top: 16px;">Review Duplicates</a>
             </article>
 
             <article class="feature-card">
@@ -41,6 +43,19 @@
                     Monitor resolution deadlines, overdue complaints,
                     escalation status and model performance.
                 </p>
+                <a href="{% url 'admin_analytics' %}" class="button button-outline" style="margin-top: 16px;">View Analytics</a>
+            </article>
+
+            <article class="feature-card">
+                <h3>Officers</h3>
+                <p>Review the municipal staff roster and department assignments.</p>
+                <a href="{% url 'admin_officers' %}" class="button button-outline" style="margin-top: 16px;">View Officers</a>
+            </article>
+
+            <article class="feature-card">
+                <h3>Department Portal</h3>
+                <p>Open department work queues and track complaint progress.</p>
+                <a href="{% url 'dept_dashboard' %}" class="button button-outline" style="margin-top: 16px;">Open Department Portal</a>
             </article>
 
             {% if request.user.is_superuser %}

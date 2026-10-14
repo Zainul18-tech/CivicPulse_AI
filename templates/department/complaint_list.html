@@ -1,0 +1,85 @@
+{% extends 'department/base_dept.html' %}
+
+{% block title %}{{ department.name }} Complaints | CivicPulse AI{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{{ department.name }}</p>
+<h1>Assigned complaints</h1>
+<form method="get" class="filter-form">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search complaint ID, title, notes, or staff">
+    <select name="status">
+        <option value="">All statuses</option>
+        {% for value in statuses %}
+            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+    </select>
+    <select name="priority">
+        <option value="">All priorities</option>
+        {% for value in priorities %}
+            <option value="{{ value }}" {% if priority == value %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+    </select>
+    <select name="sort">
+        <option value="deadline" {% if sort == 'deadline' %}selected{% endif %}>Deadline: earliest first</option>
+        <option value="-deadline" {% if sort == '-deadline' %}selected{% endif %}>Deadline: latest first</option>
+        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest first</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+<div class="dept-panel">
+    <div class="table-scroll">
+        <table class="complaint-table">
+            <thead>
+                <tr>
+                    <th>Complaint ID</th>
+                    <th>Description</th>
+                    <th>Department</th>
+                    <th>Priority</th>
+                    <th>Assigned staff / team</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Latest work notes</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                    <tr>
+                        <td><strong>{{ complaint.tracking_id|default:complaint.pk }}</strong></td>
+                        <td><strong>{{ complaint.title }}</strong><br>{{ complaint.description|truncatewords:18 }}</td>
+                        <td>{{ complaint.department.name }}</td>
+                        <td><span class="priority-label priority-{{ complaint.priority|lower }}">{{ complaint.priority }}</span></td>
+                        <td>
+                            {% if complaint.work.assigned_user %}
+                                {{ complaint.work.assigned_user.get_full_name|default:complaint.work.assigned_user.username }}
+                            {% elif complaint.work.assigned_team %}
+                                {{ complaint.work.assigned_team.name }}
+                            {% else %}
+                                {{ complaint.work.assigned_staff|default:"Unassigned" }}
+                            {% endif %}
+                        </td>
+                        <td>{{ complaint.work.deadline|date:"M j, Y"|default:"Not set" }}</td>
+                        <td>
+                            {% if complaint.status != 'Resolved' and complaint.work.deadline and complaint.work.deadline < today %}
+                                <span class="status-pill status-overdue">Overdue</span>
+                            {% else %}
+                                <span class="status-pill">{{ complaint.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for update in complaint.ordered_work_updates %}
+                                {% if forloop.first %}{{ update.work_done|truncatewords:12 }}{% endif %}
+                            {% empty %}
+                                {{ complaint.work.work_notes|default:"-"|truncatewords:12 }}
+                            {% endfor %}
+                        </td>
+                        <td><a class="dept-button compact-button" href="{% url 'dept_work_progress' complaint.pk %}">Open</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="9" class="empty-cell">No complaints match these filters.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

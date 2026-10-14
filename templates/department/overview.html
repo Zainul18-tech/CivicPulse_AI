@@ -1,0 +1,50 @@
+{% extends 'department/base_dept.html' %}
+
+{% block title %}{{ department.name }} Overview | CivicPulse AI{% endblock %}
+
+{% block content %}
+<p class="eyebrow">{{ department.name }}</p>
+<h1>Department overview</h1>
+<div class="dept-grid dept-stats">
+    <div class="dept-card"><span>Total complaints</span><strong>{{ total }}</strong></div>
+    <div class="dept-card"><span>Pending</span><strong>{{ pending }}</strong></div>
+    <div class="dept-card"><span>In progress</span><strong>{{ in_progress }}</strong></div>
+    <div class="dept-card"><span>Resolved</span><strong>{{ resolved }}</strong></div>
+    <div class="dept-card overdue-card"><span>Overdue</span><strong>{{ overdue }}</strong></div>
+</div>
+<section class="dept-panel">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">WORK QUEUE</p>
+            <h2>Priority summary</h2>
+        </div>
+        <a class="dept-button" href="{% url 'dept_complaints' %}">View complaints</a>
+    </div>
+    <div class="priority-chart" role="img" aria-label="Complaint counts by priority">
+        {% for item in priority %}
+            <div class="priority-row">
+                <span class="priority-label priority-{{ item.name|lower }}">{{ item.name }}</span>
+                <div class="priority-track"><span class="priority-bar priority-{{ item.name|lower }}" style="width: {{ item.percentage }}%;"></span></div>
+                <strong>{{ item.count }}</strong>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+<section class="dept-panel">
+    <h2>Recent activity</h2>
+    {% for item in activity %}
+        <article class="update">
+            <span class="activity-dot activity-{{ item.kind }}"></span>
+            <div class="activity-content">
+                <strong>{{ item.complaint.tracking_id|default:item.complaint.pk }}</strong>
+                <span>{{ item.date|date:"M j, Y H:i" }}</span>
+                <p>{{ item.description }}</p>
+                {% if item.status %}<span class="status-pill">{{ item.status }}</span>{% endif %}
+                {% if item.user %}<small>by {{ item.user.get_full_name|default:item.user.username }}</small>{% endif %}
+            </div>
+        </article>
+    {% empty %}
+        <p class="muted">No recent complaint activity.</p>
+    {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Complaint | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 720px;">
+        <span class="eyebrow">CITIZEN PORTAL</span>
+        <h1 style="margin-top: 12px;">Submit a complaint</h1>
+        <form method="post" style="margin-top: 24px;">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Complaint title</label>
+                <input id="title" name="title" type="text" required placeholder="Example: Pothole on Main Street" />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="6" required placeholder="Describe the issue, location, and any relevant details."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority" name="priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" name="department">
+                    <option value="">Unassigned</option>
+                    {% for department in departments %}
+                        <option value="{{ department.pk }}">{{ department.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 20px;">
+                <button type="submit" class="button button-primary">Submit complaint</button>
+                <a href="{% url 'dashboard' %}" class="button button-outline">Back to dashboard</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -43,6 +43,19 @@ urlpatterns = [
         views.admin_dashboard,
         name="admin_dashboard",
     ),
+    path("admin/complaints/", views.admin_complaints, name="admin_complaints"),
+    path(
+        "admin/duplicate-review/",
+        views.admin_duplicate_review,
+        name="admin_duplicate_review",
+    ),
+    path("admin/analytics/", views.admin_analytics, name="admin_analytics"),
+    path("admin/officers/", views.admin_officers, name="admin_officers"),
+
+    # Citizen complaint flow
+    path("complaints/submit/", views.submit_complaint, name="submit_complaint"),
+    path("complaints/", views.my_complaints, name="my_complaints"),
+    path("complaints/<int:pk>/", views.complaint_detail, name="complaint_detail"),
 
     # Logout
     path(
