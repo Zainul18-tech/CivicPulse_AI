@@ -1,0 +1,60 @@
+
+{% extends 'base.html' %}
+
+{% block title %}My Complaints | CivicPulse AI{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <span class="eyebrow">CITIZEN SERVICES</span>
+        <h1 style="margin-top: 12px;">My complaints</h1>
+        <p style="margin: 12px 0 28px; color: var(--muted);">
+            Track the complaints you have submitted.
+        </p>
+
+        <a href="{% url 'submit_complaint' %}" class="button">
+            Submit a Complaint
+        </a>
+
+        <div style="margin-top: 28px;">
+            {% for complaint in complaints %}
+                <article class="feature-card" style="margin-bottom: 18px;">
+                    <p class="eyebrow">{{ complaint.tracking_id }}</p>
+                    <h3>{{ complaint.title }}</h3>
+                    <p style="margin-top: 10px;">
+                        {{ complaint.description }}
+                    </p>
+
+                    <p style="margin-top: 12px;">
+                        <strong>Location:</strong> {{ complaint.location }}
+                    </p>
+
+                    <p>
+                        <strong>Category:</strong>
+                        {{ complaint.get_category_display }}
+                    </p>
+
+                    <p>
+                        <strong>Priority:</strong>
+                        {{ complaint.get_priority_display }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        {{ complaint.get_status_display }}
+                    </p>
+
+                    <p style="margin-top: 10px; color: var(--muted);">
+                        Submitted: {{ complaint.created_at|date:"d M Y, h:i A" }}
+                    </p>
+                </article>
+            {% empty %}
+                <div class="feature-card" style="margin-top: 24px;">
+                    <h3>No complaints yet</h3>
+                    <p>Submit your first civic issue to get started.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

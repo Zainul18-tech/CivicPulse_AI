@@ -19,7 +19,6 @@ local_settings.py
 !.env.example
 
 # Local databases and backups
-db.sqlite3
 data_backup.json
 
 # User-uploaded files

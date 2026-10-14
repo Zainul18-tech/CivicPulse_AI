@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint | CivicPulse AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            color: #163b72;
+        }
+
+        .subtitle {
+            margin-bottom: 28px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input:not([type="checkbox"]),
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fff;
+            color: #1e293b;
+        }
+
+        input[type="file"] {
+            width: 100%;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .help-text {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .error {
+            margin-top: 6px;
+            color: #dc2626;
+            font-size: 13px;
+        }
+
+        .location-panel {
+            padding: 18px;
+            margin-top: 10px;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            background: #f8fbff;
+        }
+
+        .location-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        button,
+        .back-link {
+            display: inline-block;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .coordinates-button {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .coordinates-button:hover {
+            background: #1d4ed8;
+        }
+
+        .clear-button,
+        .back-link {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 14px;
+            background: #163b72;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .submit-button:hover {
+            background: #102d57;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #coordinateStatus {
+            margin: 12px 0;
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .coordinates {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .preview {
+            display: none;
+            max-width: 100%;
+            max-height: 250px;
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .form-errors {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .required-note {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .match-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .match-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #1e293b;
+            border-radius: 8px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .match-option:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .match-option strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px 10px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .location-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Submit a Complaint</h1>
+
+    <p class="subtitle">
+        Report a civic issue to the appropriate department.
+        Enter the location manually and retrieve its coordinates
+        before submitting your complaint.
+    </p>
+
+    <p class="required-note">
+        Fields marked with * are required.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if form.non_field_errors %}
+        <div class="form-errors">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form
+        id="complaintForm"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="form-errors">
+                Please correct the errors shown below.
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">
+                Complaint Title *
+            </label>
+
+            {{ form.title }}
+
+            {% for error in form.title.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">
+                Complaint Description *
+            </label>
+
+            {{ form.description }}
+
+            <div class="help-text">
+                Explain the issue and its impact on residents.
+            </div>
+
+            {% for error in form.description.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.citizen_priority.id_for_label }}">
+                Your Estimated Priority *
+            </label>
+
+            {{ form.citizen_priority }}
+
+            <div class="help-text">
+                The system can assess the operational priority separately.
+            </div>
+
+            {% for error in form.citizen_priority.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.language.id_for_label }}">
+                Complaint Language *
+            </label>
+
+            {{ form.language }}
+
+            {% for error in form.language.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_location">
+                Complete Address or Landmark *
+            </label>
+
+            {{ form.location }}
+
+            <div class="help-text">
+                Enter a specific address, street, landmark, town/city,
+                and state where possible.
+                Example: Singanallur Bus Stop, Trichy Road,
+                Coimbatore, Tamil Nadu, India.
+            </div>
+
+            {% for error in form.location.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+
+            <div class="location-panel">
+
+                <strong>
+                    Find the coordinates for your entered address
+                </strong>
+
+                <div class="location-buttons">
+
+                    <button
+                        type="button"
+                        class="coordinates-button"
+                        id="getCoordinatesButton"
+                    >
+                        Get Coordinates
+                    </button>
+
+                    <button
+                        type="button"
+                        class="clear-button"
+                        id="clearLocationButton"
+                    >
+                        Clear Coordinates
+                    </button>
+
+                </div>
+
+                <div
+                    id="coordinateStatus"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Enter the address, then click Get Coordinates.
+                </div>
+
+                <div
+                    id="coordinateMatches"
+                    class="match-list"
+                    hidden
+                ></div>
+
+                <div class="coordinates" id="coordinateDisplay">
+                    Latitude: Not selected<br>
+                    Longitude: Not selected
+                </div>
+
+                <div id="mapLinkContainer" hidden>
+                    <a
+                        id="mapLink"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Verify selected coordinates on OpenStreetMap
+                    </a>
+                </div>
+
+            </div>
+
+            {{ form.latitude }}
+            {{ form.longitude }}
+
+            {% for error in form.latitude.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+
+            {% for error in form.longitude.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.evidence_image.id_for_label }}">
+                Supporting Evidence Image
+            </label>
+
+            {{ form.evidence_image }}
+
+            <div class="help-text">
+                Optional. Upload a photo of the reported issue.
+                Maximum size: 5 MB.
+            </div>
+
+            <img
+                id="evidencePreview"
+                class="preview"
+                alt="Evidence image preview"
+            >
+
+            {% for error in form.evidence_image.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.live_image.id_for_label }}">
+                Additional Live Photo
+            </label>
+
+            {{ form.live_image }}
+
+            <div class="help-text">
+                Optional. On supported devices, use the file chooser
+                to take a photo.
+            </div>
+
+            <img
+                id="livePreview"
+                class="preview"
+                alt="Live photo preview"
+            >
+
+            {% for error in form.live_image.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="submit-button">
+            Submit Complaint
+        </button>
+
+    </form>
+
+    <a href="{% url 'my_complaints' %}" class="back-link">
+        View My Complaints
+    </a>
+
+</div>
+
+<script>
+(() => {
+    "use strict";
+
+    const form = document.getElementById("complaintForm");
+    const addressInput = document.getElementById("id_location");
+    const latitudeInput = document.getElementById("id_latitude");
+    const longitudeInput = document.getElementById("id_longitude");
+
+    const getCoordinatesButton =
+        document.getElementById("getCoordinatesButton");
+
+    const clearLocationButton =
+        document.getElementById("clearLocationButton");
+
+    const coordinateStatus =
+        document.getElementById("coordinateStatus");
+
+    const coordinateDisplay =
+        document.getElementById("coordinateDisplay");
+
+    const coordinateMatches =
+        document.getElementById("coordinateMatches");
+
+    const mapLink =
+        document.getElementById("mapLink");
+
+    const mapLinkContainer =
+        document.getElementById("mapLinkContainer");
+
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+    let requestSequence = 0;
+    let selectedAddressSnapshot = "";
+
+    function clearSelectedCoordinates(message) {
+        latitudeInput.value = "";
+        longitudeInput.value = "";
+        selectedAddressSnapshot = "";
+
+        coordinateMatches.replaceChildren();
+        coordinateMatches.hidden = true;
+
+        mapLinkContainer.hidden = true;
+
+        coordinateDisplay.innerHTML =
+            "Latitude: Not selected<br>Longitude: Not selected";
+
+        if (message) {
+            coordinateStatus.textContent = message;
+        }
+    }
+
+    function showCoordinates(latitude, longitude) {
+        coordinateDisplay.replaceChildren();
+
+        const latitudeLine = document.createElement("div");
+        latitudeLine.textContent =
+            "Latitude: " + latitude.toFixed(6);
+
+        const longitudeLine = document.createElement("div");
+        longitudeLine.textContent =
+            "Longitude: " + longitude.toFixed(6);
+
+        coordinateDisplay.append(
+            latitudeLine,
+            longitudeLine
+        );
+    }
+
+    function selectResult(result, addressSnapshot) {
+        const latitude = Number(result.lat);
+        const longitude = Number(result.lon);
+
+        if (
+            !Number.isFinite(latitude) ||
+            !Number.isFinite(longitude) ||
+            latitude < -90 ||
+            latitude > 90 ||
+            longitude < -180 ||
+            longitude > 180
+        ) {
+            coordinateStatus.textContent =
+                "The geocoding service returned invalid coordinates.";
+            return;
+        }
+
+        latitudeInput.value = latitude.toFixed(6);
+        longitudeInput.value = longitude.toFixed(6);
+
+        selectedAddressSnapshot = addressSnapshot;
+
+        showCoordinates(latitude, longitude);
+
+        mapLink.href =
+            "https://www.openstreetmap.org/?mlat=" +
+            encodeURIComponent(latitude) +
+            "&mlon=" +
+            encodeURIComponent(longitude) +
+            "#map=18/" +
+            latitude +
+            "/" +
+            longitude;
+
+        mapLinkContainer.hidden = false;
+
+        coordinateStatus.textContent =
+            "Coordinates selected. Verify the address before submitting.";
+    }
+
+    async function findCoordinates() {
+        const address = addressInput.value.trim();
+
+        if (!address) {
+            coordinateStatus.textContent =
+                "Please enter the complete address first.";
+
+            addressInput.focus();
+            return;
+        }
+
+        if (address.length > 255) {
+            coordinateStatus.textContent =
+                "Please shorten the address to 255 characters or fewer.";
+
+            addressInput.focus();
+            return;
+        }
+
+        const thisRequest = ++requestSequence;
+
+        clearSelectedCoordinates(
+            "Searching for matching addresses..."
+        );
+
+        getCoordinatesButton.disabled = true;
+        coordinateMatches.hidden = true;
+
+        try {
+            const params = new URLSearchParams({
+                q: address + ", India",
+                format: "jsonv2",
+                limit: "5",
+                addressdetails: "1",
+                countrycodes: "in"
+            });
+
+            const response = await fetch(
+                "https://nominatim.openstreetmap.org/search?" +
+                params.toString(),
+                {
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Address search service returned HTTP " +
+                    response.status
+                );
+            }
+
+            const results = await response.json();
+
+            if (thisRequest !== requestSequence) {
+                return;
+            }
+
+            if (
+                !Array.isArray(results) ||
+                results.length === 0
+            ) {
+                coordinateStatus.textContent =
+                    "No matching address found. Add a nearby landmark, " +
+                    "city, district, or PIN code and try again.";
+
+                return;
+            }
+
+            coordinateMatches.replaceChildren();
+
+            results.forEach((result, index) => {
+                const button = document.createElement("button");
+
+                button.type = "button";
+                button.className = "match-option";
+
+                const title = document.createElement("strong");
+                title.textContent = "Match " + (index + 1);
+
+                const description = document.createElement("span");
+                description.textContent =
+                    result.display_name ||
+                    "Address details unavailable";
+
+                button.append(title, description);
+
+                button.addEventListener("click", () => {
+                    if (
+                        addressInput.value.trim() !== address
+                    ) {
+                        clearSelectedCoordinates(
+                            "The address changed. Search again to get matching coordinates."
+                        );
+
+                        return;
+                    }
+
+                    selectResult(result, address);
+
+                    coordinateStatus.textContent =
+                        "You selected this match. Verify it on " +
+                        "OpenStreetMap before submitting.";
+                });
+
+                coordinateMatches.appendChild(button);
+            });
+
+            coordinateMatches.hidden = false;
+
+            coordinateStatus.textContent =
+                "Choose the correct match from the results. " +
+                "Do not select a nearby place unless it is the " +
+                "actual complaint location.";
+
+        } catch (error) {
+            console.error("Geocoding error:", error);
+
+            coordinateStatus.textContent =
+                "Could not retrieve coordinates. Check your internet " +
+                "connection and try again.";
+
+        } finally {
+            if (thisRequest === requestSequence) {
+                getCoordinatesButton.disabled = false;
+            }
+        }
+    }
+
+    getCoordinatesButton.addEventListener(
+        "click",
+        findCoordinates
+    );
+
+    clearLocationButton.addEventListener("click", () => {
+        requestSequence++;
+
+        clearSelectedCoordinates(
+            "Coordinates cleared. Enter or correct the address and search again."
+        );
+
+        getCoordinatesButton.disabled = false;
+    });
+
+    addressInput.addEventListener("input", () => {
+        requestSequence++;
+
+        clearSelectedCoordinates(
+            "Address changed. Click Get Coordinates and select a matching result again."
+        );
+
+        getCoordinatesButton.disabled = false;
+    });
+
+    function setupImagePreview(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+
+        if (!input || !preview) {
+            return;
+        }
+
+        input.addEventListener("change", () => {
+            const file =
+                input.files && input.files[0];
+
+            preview.style.display = "none";
+            preview.removeAttribute("src");
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                alert("Please select a valid image file.");
+                input.value = "";
+                return;
+            }
+
+            if (file.size > MAX_IMAGE_SIZE) {
+                alert("The image must be 5 MB or smaller.");
+                input.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = event => {
+                preview.src = event.target.result;
+                preview.style.display = "block";
+            };
+
+            reader.onerror = () => {
+                alert("Unable to preview this image.");
+                input.value = "";
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    setupImagePreview(
+        "id_evidence_image",
+        "evidencePreview"
+    );
+
+    setupImagePreview(
+        "id_live_image",
+        "livePreview"
+    );
+
+    form.addEventListener("submit", event => {
+        const address = addressInput.value.trim();
+
+        if (!address) {
+            event.preventDefault();
+
+            alert("Please enter the complete complaint address.");
+            addressInput.focus();
+
+            return;
+        }
+
+        if (address.length > 255) {
+            event.preventDefault();
+
+            alert("The address must be 255 characters or fewer.");
+            addressInput.focus();
+
+            return;
+        }
+
+        if (
+            !latitudeInput.value ||
+            !longitudeInput.value ||
+            selectedAddressSnapshot !== address
+        ) {
+            event.preventDefault();
+
+            alert(
+                "Please click Get Coordinates and select the " +
+                "correct address match before submitting."
+            );
+
+            getCoordinatesButton.focus();
+
+            return;
+        }
+
+        const imageInputIds = [
+            "id_evidence_image",
+            "id_live_image"
+        ];
+
+        for (const inputId of imageInputIds) {
+            const input = document.getElementById(inputId);
+
+            const file =
+                input &&
+                input.files &&
+                input.files[0];
+
+            if (file && file.size > MAX_IMAGE_SIZE) {
+                event.preventDefault();
+
+                alert("Each image must be 5 MB or smaller.");
+
+                input.focus();
+
+                return;
+            }
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

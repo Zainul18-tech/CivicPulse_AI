@@ -6,36 +6,100 @@
 {% block content %}
 <section class="section">
     <div class="container">
+
         <span class="eyebrow">CITIZEN PORTAL</span>
-        <h1 style="margin-top: 12px;">Welcome, {{ request.user.first_name|default:request.user.username }}</h1>
+
+        <h1 style="margin-top: 12px;">
+            Welcome, {{ request.user.first_name|default:request.user.username }}
+        </h1>
 
         <p style="margin-top: 10px; color: var(--muted);">
-            Your civic activity and complaint tracking will appear here.
+            Report civic issues, track your complaints, and stay informed
+            about their progress through CivicPulse AI.
         </p>
 
+        {% if messages %}
+            {% for message in messages %}
+                <div
+                    role="alert"
+                    style="margin-top: 20px; padding: 14px 18px;
+                           border-radius: 10px; background: #eaf7ef;
+                           color: #17663a;"
+                >
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="feature-grid" style="margin-top: 32px;">
+
             <article class="feature-card">
-                <h3>Report an issue</h3>
-                <p>Submit a civic problem for review and routing.</p>
+                <h3>Report an Issue</h3>
+
+                <p>
+                    Submit a civic problem with its description and location
+                    for municipal review.
+                </p>
+
+                <a
+                    href="{% url 'submit_complaint' %}"
+                    class="button"
+                    style="margin-top: 18px;"
+                >
+                    Submit Complaint
+                </a>
             </article>
 
             <article class="feature-card">
-                <h3>My complaints</h3>
-                <p>Review complaint status and progress updates.</p>
+                <h3>My Complaints</h3>
+
+                <p>
+                    View your submitted complaints, tracking IDs, priorities,
+                    and current statuses.
+                </p>
+
+                <a
+                    href="{% url 'my_complaints' %}"
+                    class="button button-outline"
+                    style="margin-top: 18px;"
+                >
+                    Track Complaints
+                </a>
             </article>
 
             <article class="feature-card">
-                <h3>Account</h3>
-                <p>Signed in as {{ request.user.username }}.</p>
+                <h3>My Account</h3>
+
+                <p>
+                    <strong>Name:</strong>
+                    {{ request.user.first_name|default:request.user.username }}
+                </p>
+
+                <p style="margin-top: 8px;">
+                    <strong>Username:</strong>
+                    {{ request.user.username }}
+                </p>
+
+                <p style="margin-top: 8px;">
+                    <strong>Email:</strong>
+                    {{ request.user.email|default:"Not provided" }}
+                </p>
             </article>
+
         </div>
 
-        <form method="post" action="{% url 'logout' %}" style="margin-top: 28px;">
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+            style="margin-top: 28px;"
+        >
             {% csrf_token %}
+
             <button type="submit" class="button button-outline">
                 Log Out
             </button>
         </form>
+
     </div>
 </section>
 {% endblock %}

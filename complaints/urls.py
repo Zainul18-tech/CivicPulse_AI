@@ -44,6 +44,18 @@ urlpatterns = [
         name="admin_dashboard",
     ),
 
+    path(
+    "citizen/complaints/submit/",
+    views.submit_complaint,
+    name="submit_complaint",
+    ),
+    
+    path(
+    "citizen/complaints/",
+    views.my_complaints,
+    name="my_complaints",
+    ),
+
     # Logout
     path(
         "logout/",

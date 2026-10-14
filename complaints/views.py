@@ -5,7 +5,12 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
-from .forms import CitizenSignUpForm, StaffCreationForm
+from .forms import (
+    CitizenSignUpForm,
+    StaffCreationForm,
+    ComplaintSubmissionForm,
+)
+from .models import Complaint
 
 
 def home(request):
@@ -16,6 +21,8 @@ def home(request):
 def citizen_signup(request):
     """Register a new citizen account."""
     if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect("admin_dashboard")
         return redirect("dashboard")
 
     if request.method == "POST":
@@ -114,35 +121,88 @@ def citizen_dashboard(request):
 
 @user_passes_test(
     lambda user: user.is_authenticated and user.is_staff,
-    login_url="/admin/login/",
+    login_url="admin_login",
 )
 def admin_dashboard(request):
-    """Temporary landing page for authorized staff."""
+    """Display the staff dashboard."""
     return render(request, "admin/dashboard.html")
 
 
 
-@require_POST
-def logout_view(request):
-    """Log out and redirect to citizen login."""
-    logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect("citizen_login")
+@login_required(login_url="citizen_login")
+def submit_complaint(request):
+    if request.user.is_staff:
+        return redirect("admin_dashboard")
+
+    if request.method == "POST":
+        form = ComplaintSubmissionForm(
+            request.POST,
+            request.FILES,
+        )
+
+        if form.is_valid():
+            complaint = form.save(commit=False)
+            complaint.citizen = request.user
+
+            # Keep system-assessed priority separate from citizen priority.
+            complaint.priority = Complaint.Priority.MEDIUM
+
+            complaint.save()
+
+            messages.success(
+                request,
+                f"Complaint submitted successfully. "
+                f"Your tracking ID is {complaint.tracking_id}.",
+            )
+            return redirect("my_complaints")
+
+        messages.error(
+            request,
+            "Please correct the errors below and submit again.",
+        )
+    else:
+        form = ComplaintSubmissionForm()
+
+    return render(
+        request,
+        "citizen/submit_complaint.html",
+        {"form": form},
+    )
+
+
+
+@login_required(login_url="citizen_login")
+def my_complaints(request):
+    """Show only complaints submitted by the logged-in citizen."""
+    if request.user.is_staff:
+        return redirect("admin_dashboard")
+
+    complaints = Complaint.objects.filter(
+        citizen=request.user
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "citizen/my_complaints.html",
+        {"complaints": complaints},
+    )
 
 
 @user_passes_test(
-    lambda user: user.is_authenticated and user.is_staff,
+    lambda user: user.is_authenticated and user.is_superuser,
     login_url="admin_login",
 )
 def create_staff_account(request):
+    """Allow only superusers to create staff accounts."""
     if request.method == "POST":
         form = StaffCreationForm(request.POST)
 
         if form.is_valid():
             form.save()
+
             messages.success(
                 request,
-                "Staff account created successfully."
+                "Staff account created successfully.",
             )
             return redirect("create_staff_account")
     else:
@@ -153,3 +213,11 @@ def create_staff_account(request):
         "admin/create_staff_account.html",
         {"form": form},
     )
+
+
+@require_POST
+def logout_view(request):
+    """Log out and redirect to citizen login."""
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect("citizen_login")
