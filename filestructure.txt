@@ -1,0 +1,49 @@
+|-- .gitignore
+|-- civicpulse_ai
+    |-- asgi.py
+    |-- settings.py
+    |-- urls.py
+    |-- wsgi.py
+    |-- __init__.py
+|-- complaints
+    |-- admin.py
+    |-- apps.py
+    |-- forms.py
+    |-- migrations
+        |-- __init__.py
+    |-- models.py
+    |-- tests.py
+    |-- urls.py
+    |-- views.py
+    |-- __init__.py
+|-- manage.py
+|-- requirements.txt
+|-- static
+    |-- css
+        |-- admin.css
+        |-- auth.css
+        |-- citizen.css
+        |-- style.css
+    |-- js
+        |-- admin.js
+        |-- citizen.js
+        |-- main.js
+|-- templates
+    |-- accounts
+        |-- admin_login.html
+        |-- citizen_login.html
+        |-- citizen_signup.html
+    |-- admin
+        |-- analytics.html
+        |-- complaints.html
+        |-- create_staff_account.html
+        |-- dashboard.html
+        |-- duplicate_review.html
+        |-- officers.html
+    |-- base.html
+    |-- citizen
+        |-- complaint_detail.html
+        |-- dashboard.html
+        |-- my_complaints.html
+        |-- submit_complaint.html
+    |-- home.html
